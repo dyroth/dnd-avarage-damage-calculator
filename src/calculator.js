@@ -10,15 +10,13 @@ export function avgDmg(values) {
     const attackRolls = values.attackRolls;
     const attacks = values.attacks;
 
-    const throwAmmount = 100000;
+    const throwAmount = 500000;
     let damageTotal = 0;
-    let counter = 0;
 
-    for (let i=0; i < throwAmmount; i++) {
+    for (let i=0; i < throwAmount; i++) {
         for (let j=1; j <= attacks; j++) {
 
             let attack = attackHits(attackModifier, armorClass, attackRolls);
-            counter++;
 
             if (attack['hit']) {
                 Object.entries(damageDice).forEach(([sides, amount]) => {
@@ -27,35 +25,56 @@ export function avgDmg(values) {
                     }
 
                     for (let k=1; k <= amount ; k++) {
-                        damageTotal += random.int(1, parseInt(sides)) + damageModifier;
+                        damageTotal += random.int(1, parseInt(sides));
                     }
+
                 });
+
+                damageTotal += damageModifier;
             }
         }
     }
 
 
-    return round(damageTotal/throwAmmount, 0);
+    return round(damageTotal/throwAmount, 0);
 }
 
 function attackHits(attackModifier, armorClass, attackRolls) {
-    let attack = {};
+    let attack = [];
 
     attack['hit']  = false;
     attack['crit'] = false;
 
-    for (let r=1; r <= attackRolls; r++) {
+    if (attackRolls != 0) {
+        for (let r=1; r <= attackRolls; r++) {
 
-        let rolledAttackRoll = random.int(1, 20);
+            let rolledAttackRoll = random.int(1, 20);
+
+            if (!attack['hit']) {
+                attack['hit'] = rolledAttackRoll !== 1 && rolledAttackRoll + attackModifier >= armorClass;
+            }
+
+            if (!attack['crit']) {
+                attack['crit'] = rolledAttackRoll === 20;
+            }
+        }
+    } else {
+        //Disatvantage
+        let rolledAttackRolls = [];
+        rolledAttackRolls[0] = random.int(1, 20);
+        rolledAttackRolls[1] = random.int(1, 20);
+
+        const roll = Array.min(rolledAttackRolls);
 
         if (!attack['hit']) {
-            attack['hit'] = rolledAttackRoll != 1 && rolledAttackRoll + attackModifier >= armorClass;
+            attack['hit'] = roll !== 1 && roll + attackModifier >= armorClass;
         }
 
         if (!attack['crit']) {
-            attack['crit'] = rolledAttackRoll == 20;
+            attack['crit'] = roll === 20;
         }
     }
+
 
     return attack;
 }
@@ -93,3 +112,7 @@ export function critChance(rolls, critRange)
 
     return round(((successes/throwAmmount)*100), 0) + "%";
 }
+
+Array.min = function( array ){
+    return Math.min.apply( Math, array );
+};
