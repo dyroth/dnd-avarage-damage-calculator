@@ -15,6 +15,7 @@ class AvgDmg extends React.Component {
         avgDmg: 0,
         hitChance: 0,
         critChance: 0,
+        attackRolls: 1,
     };
 
     addDie = sides => {

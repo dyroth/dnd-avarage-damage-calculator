@@ -50,7 +50,12 @@ class AvgDmgForm extends React.Component {
                             <input name="attacks" type="text" placeholder={"# of attacks"} onChange={(event) => this.props.changeState("attacks", parseInt(event.target.value))} />
                         </div>
                         <div className="col-sm-4">
-                            <input name="attackRolls" type={"text"} placeholder={"Advantage"} onChange={(event) => this.props.changeState("attackRolls", parseInt(event.target.value))} />
+                            <select name="attackRolls" defaultValue={1} onChange={(event) => this.props.changeState("attackRolls", parseInt(event.target.value))} className={'selectBig'}>
+                                <option value="0">Disadvantage</option>
+                                <option value="1">Straight</option>
+                                <option value="2">Advantage</option>
+                                <option value="3">Elven Accuracy</option>
+                            </select>
                         </div>
                         <div className="col-sm-4">
                             <input name="armorClass" type={"text"} placeholder={"Armor Class"} onChange={(event) => this.props.changeState("armorClass", parseInt(event.target.value))} />
